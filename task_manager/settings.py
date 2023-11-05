@@ -51,6 +51,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tasks',
+    'rest_framework',
+    # 'rest_framework.authtoken',
+    'rest_framework_api_key',
     'django_filters',
 ]
 
@@ -115,6 +118,13 @@ DATABASES = {
         'PORT': env('DB_PORT'),
 
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',
+    ),
 }
 
 

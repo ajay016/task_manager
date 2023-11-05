@@ -347,23 +347,4 @@ class TaskUpdate(View):
 
             return JsonResponse({'success': 'Task Updated Successfully'})
 
-
-# class TaskUpdateView(View):
-#     template_name = 'tasks/task_update.html'
-
-#     def get(self, request, task_id):
-#         task = Task.objects.get(id=task_id)
-#         form = TaskUpdateForm(instance=task)
-#         return render(request, self.template_name, {'form': form, 'task': task})
-
-#     def post(self, request, task_id):
-#         task = Task.objects.get(id=task_id)
-#         form = TaskUpdateForm(request.POST, request.FILES, instance=task)
-
-#         if form.is_valid():
-#             form.save()
-#             return redirect('task-list')
-
-#         return render(request, self.template_name, {'form': form, 'task': task})
-
         
