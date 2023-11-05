@@ -254,5 +254,116 @@ class TaskDetailView(View):
         task = get_object_or_404(Task, pk=task_id)  # Retrieve the task by primary key
         context = {'task': task}
         return render(request, self.template_name, context)
+        
+
+class TaskUpdateView(View):
+    template_name = 'tasks/task_update.html'  # Create a template for rendering the form
+
+    def get(self, request, task_id):
+        task = Task.objects.get(id=task_id)
+        context = {
+            'task': task,
+            'priorities': [
+                ('Low', 'Low'),
+                ('Medium', 'Medium'),
+                ('High', 'High'),
+            ]
+        }
+        print('context: ', context)
+        return render(request, self.template_name, context)
+
+    # def post(self, request, task_id):
+    #     task = Task.objects.get(id=task_id)
+
+    #     # Update the task fields based on POST data
+    #     task.title = request.POST.get('title')
+    #     task.description = request.POST.get('description')
+    #     task.due_date = request.POST.get('due_date')
+
+    #     task.save()  # Save the updated task
+
+    #     return redirect('task-list')  # Redirect to a success URL upon updating
+    
+
+class TaskUpdate(View):
+    def post(slef, request, task_id):
+        task = Task.objects.get(id=task_id)
+
+        title = request.POST.get('task_name')
+        description = request.POST.get('description')
+        due_date = request.POST.get('due_date')
+        priority = request.POST.get('priority')
+
+        print('title: ', title)
+
+        photo_id_list = request.POST.get('photo_id_list')
+        photo_id_list = photo_id_list.split(',')
+        new_photos = request.FILES.getlist('photos')
+        print('add_photo_list: ', new_photos)
+        
+        print('photo_id_list: ', photo_id_list)
+
+        if due_date:
+            try:
+                formatted_date = datetime.strptime(due_date, "%b. %d, %Y").strftime("%Y-%m-%d")
+            except ValueError:
+                try:
+                    formatted_date = datetime.strptime(due_date, '%Y-%m-%d')
+                except:
+                    JsonResponse({'error_date': 'Error Parsing Date'} )
+        
+        else:
+            formatted_date = None
+
+
+        if title == '':
+            print('null')
+            return JsonResponse({'error_title': 'Title is required'})
+        
+        else:
+            photos = []
+            for photo_id in photo_id_list:
+                try:
+                    photo = Photo.objects.get(id=photo_id)
+                    print('got photo: ', photo.id)
+                    print('photo.task_set: ', photo.task_set.all())
+                    task.photos.remove(photo)
+                    photo.task_set.remove(task)
+                    print('photo.task_set1: ', photo.task_set.all())
+                except:
+                    photo = None
+                    print('no photo')
+
+            for new_photo in new_photos:
+                photo = Photo(image=new_photo)
+                photo.save()
+                task.photos.add(photo)
+
+            task.title = title
+            task.description = description
+            task.due_date = formatted_date
+            task.priority = priority
+            task.save()
+
+            return JsonResponse({'success': 'Task Updated Successfully'})
+
+
+# class TaskUpdateView(View):
+#     template_name = 'tasks/task_update.html'
+
+#     def get(self, request, task_id):
+#         task = Task.objects.get(id=task_id)
+#         form = TaskUpdateForm(instance=task)
+#         return render(request, self.template_name, {'form': form, 'task': task})
+
+#     def post(self, request, task_id):
+#         task = Task.objects.get(id=task_id)
+#         form = TaskUpdateForm(request.POST, request.FILES, instance=task)
+
+#         if form.is_valid():
+#             form.save()
+#             return redirect('task-list')
+
+#         return render(request, self.template_name, {'form': form, 'task': task})
 
         

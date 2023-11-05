@@ -537,3 +537,367 @@ thead tr:nth-child(3) th {
 /* custom select dropdown ends */
 
 
+/* input file starts */
+.photos-div{
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 70px;
+    position: relative;
+    margin-bottom: 50px;
+    border: 1px rgb(204, 204, 204);
+    border-style: dashed;
+}
+
+.photos-div input[type="file"] {
+    cursor: pointer;
+    display: block;
+    height: 100%;
+    /* left: 0; */
+    opacity: 0 !important;
+    position: absolute;
+    /* top: 0; */
+    width: 100%;
+    background-color: transparent;
+}
+
+.photos-div p span{
+    color: rgb(167, 167, 167);
+    font-size: 20px;
+    font-weight: 500;
+
+}
+
+.thumbnails {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .thumbnail {
+    max-width: 100px;
+    max-height: 100px;
+  }
+/*input file ends */
+
+/* Card starts */
+.card{
+    width: 100%;
+    height: 80px;
+    border-radius: 15px;
+    box-shadow: 0px 10px 30px 9px rgba(0,0,0,0.1);
+    transition: 0.3s linear;
+}
+
+.card:hover{
+    transform: scale(1.04);
+}
+
+.task-action-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 70px;
+    height: 80px;
+    /* max-width: 50px; */
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgba(75,17,7,1) 0%, rgba(69,27,10,1) 100%);
+}
+
+.eye-div{
+    height: 40px;
+    width: 40px;
+    /* justify-content: center; */
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    /* border-top-right-radius: 15px; */
+}
+
+.trash-div{
+    height: 40px;
+    width: 40px;
+    /* justify-content: center; */
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    /* border-bottom-right-radius: 15px; */
+}
+
+.eye-div:hover{
+    background-color: rgb(75, 47, 43);
+}
+
+.trash-div:hover{
+    background-color: rgb(136, 27, 7);
+}
+
+/* checbox starts */
+.completed-div{
+    width: 80px;
+    /* max-width: 50px; */
+    height: 80px;
+    padding: 15px;
+    background: rgb(75,17,7);
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+    background: linear-gradient(180deg, rgba(75,17,7,0.2) 0%, rgba(69,27,10,0.2) 100%);
+}
+
+
+.completed-div label i{
+    font-size: 30px;
+    font-weight: 800;
+    /* color: rgb(0, 134, 0); */
+    color: rgb(255, 255, 255); 
+    -webkit-text-stroke: 1px rgb(161, 161, 161); /* width and color */
+}
+
+.completed-div input[type="checkbox"] {
+    display: none; /* Hide the default checkbox input */
+}
+
+.completed-div label {
+    /* position: absolute;
+    top: 0;
+    left: 0; */
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 50%;
+    /* border: 1px solid rgb(138, 138, 138);  */
+    cursor: pointer;
+    background-color: white;
+}
+
+.completed-div input[type="checkbox"]:checked + label {
+    /* background-color: #007bff;  */
+    /* border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px; */
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgba(75,17,7,1) 0%, rgba(69,27,10,1) 100%);
+}
+
+.completed-div input[type="checkbox"]:checked + label i {
+    color: rgb(0, 134, 0); /* Set the color to green when the checkbox is checked */
+    /* -webkit-text-stroke: transparent; */
+    -webkit-text-stroke: 2px rgb(0, 134, 0);
+}
+/*checkbox ends */
+
+/* tasks details page checkbox starts */
+.detail-completed-div{
+    width: 80px;
+    /* max-width: 50px; */
+    height: 80px;
+    padding: 15px;
+    border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px;
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgba(75,17,7,0.2) 0%, rgba(69,27,10,0.2) 100%);
+}
+
+
+.detail-completed-div label i{
+    font-size: 30px;
+    font-weight: 800;
+    /* color: rgb(0, 134, 0); */
+    color: rgb(255, 255, 255); 
+    -webkit-text-stroke: 1px rgb(161, 161, 161); /* width and color */
+}
+
+.detail-completed-div input[type="checkbox"] {
+    display: none; /* Hide the default checkbox input */
+}
+
+.detail-completed-div label {
+    /* position: absolute;
+    top: 0;
+    left: 0; */
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    border-radius: 50%;
+    /* border: 1px solid rgb(138, 138, 138);  */
+    cursor: pointer;
+    background-color: white;
+}
+
+.detail-completed-div input[type="checkbox"]:checked + label {
+    /* background-color: #007bff;  */
+    /* border-bottom-left-radius: 15px;
+    border-top-left-radius: 15px; */
+    background: rgb(51, 218, 9);
+    background: linear-gradient(180deg, rgb(20, 212, 13) 0%, rgb(38, 133, 9) 100%);
+}
+
+.detail-completed-div input[type="checkbox"]:checked + label i {
+    color: rgb(0, 134, 0); /* Set the color to green when the checkbox is checked */
+    /* -webkit-text-stroke: transparent; */
+    -webkit-text-stroke: 3px rgb(0, 134, 0);
+}
+
+.edit-icon-div{
+    padding-top: 15px;
+}
+
+.edit-icon-div i{
+    color: rgb(230, 230, 230);
+    font-size: 30px;
+    /* padding: 10px; */
+}
+
+.modal-header{
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgba(75,17,7,1) 0%, rgba(69,27,10,1) 100%);
+}
+
+.modal-header h5{
+    color: rgb(238, 238, 238);
+}
+
+.plus-btn{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.plus-btn:hover{
+    background-color: rgb(190, 33, 54);
+}
+
+.edit-btn{
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+.edit-btn:hover{
+    background-color: rgb(190, 33, 54);
+}
+/* tasks details page checkbox ends */
+
+.task-name-div{
+    flex: 1;
+    height: 80px;
+    /* border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px; */
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgba(75,17,7,1) 0%, rgba(69,27,10,1) 100%);
+}
+
+.task-name-div p span{
+    color: rgb(231, 231, 231);
+    text-decoration: none;
+}
+
+.task-link{
+    text-decoration: none;
+}
+
+.task-action-div i{
+    display: block;
+    color: rgb(231, 231, 231);
+}
+
+.task-view{
+    background-color: white;
+    width: 100%;
+    max-width: 1000px;
+    /* padding: 50px 70px; */
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    border-radius: 20px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+      0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.filter-btn{
+    font-size: 15px;
+    padding: 10px;
+}
+/* Card ends */
+
+/* Task detail page starts */
+.task-description{
+    min-height: 100px;
+    border-radius: 15px;
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgb(48, 20, 15) 0%, rgb(110, 40, 13) 100%);
+}
+
+.task-description p span{
+    color: rgb(235, 235, 235);
+}
+
+.decription-heading p span{
+    color: rgb(235, 235, 235);
+}
+
+.other-details{
+    min-height: 100px;
+    border-radius: 15px;
+    background: rgb(75,17,7);
+    background: linear-gradient(180deg, rgb(48, 20, 15) 0%, rgb(110, 40, 13) 100%);
+}
+
+.other-detais-heading{
+    text-decoration: underline;
+}
+
+/* .task-image-div{
+    min-width: 60px;
+    max-width: 60px;
+}
+
+.task-images{
+    width: 100%;
+    border-radius: 10px;
+
+}  */
+
+.task-image-div {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.task-image {
+    position: relative;
+    min-width: 80px;  /* Adjust this width as needed */
+    max-width: 80px;  /* Adjust this width as needed */
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.photos-checkbox{
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    border-radius: 50%;
+}
+
+.task-images {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.error-message-div{
+    padding: 0 30px;
+}
+
+.error-message{
+    margin-bottom: 8px;
+    border: 2px solid rgb(238, 15, 15);
+    background-color: rgba(204, 19, 19, 0.4);
+    border-radius: 25px;
+}
+
+/* Task detail ends */
