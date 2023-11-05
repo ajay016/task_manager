@@ -35,13 +35,20 @@ class TaskListApiView(APIView):
 
             return Response(serializer.data)
         
-        # else:
-        #     return Response({'message': 'Access Denied'})
+        else:
+            return Response({'message': 'Access Denied'})
 
 
 class TaskDetailApiView(APIView):
     def get(self, request, task_id):
-        if request.user.is_authenticated:
+        env = environ.Env()
+        environ.Env.read_env()
+        api_key = env('API_KEY')
+        print('api key: ', api_key)
+        api_header = request.headers
+        api_get_header = request.headers.get('Api-Key')
+
+        if api_key == api_get_header:
             tasks = Task.objects.get(id=task_id)
             serializer = TaskSerializer(tasks)
 
@@ -57,7 +64,14 @@ class TaskCreateApiView(APIView):
     #     return render(request, 'tasks/api_task_create.html', {'serializer': serializer})
     
     def post(self, request):
-        if request.user.is_authenticated:
+        env = environ.Env()
+        environ.Env.read_env()
+        api_key = env('API_KEY')
+        print('api key: ', api_key)
+        api_header = request.headers
+        api_get_header = request.headers.get('Api-Key')
+
+        if api_key == api_get_header:
             serializer = TaskSerializer(data=request.data)
 
             if serializer.is_valid():
@@ -73,7 +87,14 @@ class TaskCreateApiView(APIView):
 
 class TaskUpdateApiView(APIView):
     def put(self, request, task_id):
-        if request.user.is_authenticated:
+        env = environ.Env()
+        environ.Env.read_env()
+        api_key = env('API_KEY')
+        print('api key: ', api_key)
+        api_header = request.headers
+        api_get_header = request.headers.get('Api-Key')
+
+        if api_key == api_get_header:
             task = Task.objects.get(id=task_id)
             serializer = TaskSerializer(task, data=request.data)
 
@@ -90,7 +111,14 @@ class TaskUpdateApiView(APIView):
 
 class TaskPatchApiView(APIView):
     def patch(self, request, task_id):
-        if request.user.is_authenticated:
+        env = environ.Env()
+        environ.Env.read_env()
+        api_key = env('API_KEY')
+        print('api key: ', api_key)
+        api_header = request.headers
+        api_get_header = request.headers.get('Api-Key')
+
+        if api_key == api_get_header:
             task = Task.objects.get(id=task_id)
             serializer = TaskSerializer(task, data=request.data, partial=True)
 
@@ -107,7 +135,14 @@ class TaskPatchApiView(APIView):
 
 class TaskDeleteApiView(APIView):
     def delete(self, request, task_id):
-        if request.user.is_authenticated:
+        env = environ.Env()
+        environ.Env.read_env()
+        api_key = env('API_KEY')
+        print('api key: ', api_key)
+        api_header = request.headers
+        api_get_header = request.headers.get('Api-Key')
+
+        if api_key == api_get_header:
             task = Task.objects.get(id=task_id)
             task.delete()
 
