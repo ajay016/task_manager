@@ -1,0 +1,156 @@
+{% extends "tasks/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <form id="signup-form" method="POST" class="signup" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-header">
+                    <h1>Create account</h1>
+                    <h2 class="px-3">Already have an account? <a class="px-2" href="{% url 'login' %}"><span class="signup-login-link">Login</span></a></h2>
+                </div>
+              
+                <!--<div class="signup__field">
+                    <input class="signup__input" type="text" name="username" id="username" required />
+                    <label class="signup__label" for="username">Username</label>
+                </div>-->
+
+                <div class="inner-form">
+                    <div class="signup__field">
+                        <input class="signup__input" type="text" name="first_name" id="first_name">
+                        <label class="signup__label" for="first_name">First Name</label>
+                    </div>
+    
+                    <div class="signup__field">
+                        <input class="signup__input" type="text" name="last_name" id="last_name" required />
+                        <label class="signup__label" for="last_name">Last Name</label>
+                    </div>
+                  
+                    <div class="signup__field">
+                        <input class="signup__input" type="email" name="email" id="email" required />
+                        <label class="signup__label" for="email">Email</label>
+                    </div>
+                  
+                    <div class="signup__field">
+                        <input class="signup__input" type="password" name="password" id="password" required />
+                        <label class="signup__label" for="password">Password</label>
+                    </div>
+    
+                    <div class="signup__field">
+                        <input class="signup__input" type="password" name="confirm_password" id="confirm_password" required />
+                        <label class="signup__label" for="confirm_password">Confirm Password</label>
+                    </div>
+                </div>
+
+                <div id="error-message-div" class="error-message-div" style="display: none;">
+                    <div id="error-message" class="error-message py-3 px-4"></div>
+                </div>
+                
+                <div class="btn-div d-flex mb-3">
+                    <button class="submit-btn" type="submit">Sign up</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'img/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div">
+                <p class="mb-2"><span class="text-center">Registration Successful</span></p>
+                <p class="text-center"><span>Please Login</span></p>
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#signup-form').on('submit', function(event) {
+            event.preventDefault();
+            console.log('clicked')
+    
+            var username = $('#username').val();
+            console.log('username: ', username)
+            var firstName = $('#first_name').val();
+            var lastName = $('#last_name').val();
+            var email = $('#email').val();
+            var password = $('#password').val();
+            var confirmPassword = $('#confirm_password').val();
+    
+            /*if (password !== confirm_password) {
+                $('#error-message').text('Passwords do not match');
+                return;
+            }*/
+    
+            var formData = new FormData(this);
+            /*formData.append('username', username);
+            formData.append('first_name', firstName);
+            formData.append('last_name', lastName);
+            formData.append('email', email);
+            formData.append('password', password);
+            formData.append('confirm_password', confirmPassword);*/
+            console.log('formData: ', formData)
+    
+            fetch('/signup/', {
+                method: 'POST',
+                headers: {
+                    'x-CSRFToken': '{{csrftoken}}'
+                },
+                body: formData,
+                //credentials: 'same-origin',  // Include this if your Django project uses CSRF protection
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Handle success, e.g., redirect to a new page
+                    //window.location.href = '/success/';
+                    console.log('data.success: ', data.success)
+                    $('#popup-container').addClass('show');
+
+                    setTimeout(function(){
+                        window.location.href = '/login/'
+                    }, 1000)
+                }
+
+                else if(data.error_password) {
+                    $('#error-message').text(data.error_password);
+                    $('#error-message-div').show();
+                }
+
+                else if(data.error_email) {
+                    $('#error-message').text(data.error_email);
+                    $('#error-message-div').show();
+                }
+
+                else if(data.error_missing_fields) {
+                    $('#error-message').text(data.error_missing_fields);
+                    $('#error-message-div').show();
+                }
+            
+                else {
+                    $('#error-message').text(data.message);
+                }
+            })
+            .catch(error => {
+                $('#error-message').text('Error: ' + error.message);
+            });
+        });
+
+        $('.close-icon').on('click', function(){
+            $('#popup-container').removeClass('show');
+        })
+
+        $(document).on('click', function(event) {
+            if (!$(event.target).closest('.popup').length) {
+                $('#popup-container').removeClass('show');
+            }
+        });
+    });
+</script>
+
+{% endblock custom_js %}

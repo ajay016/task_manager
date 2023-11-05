@@ -1,0 +1,172 @@
+{% extends "tasks/base.html" %}
+{% load static %}
+{% block custom_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+{% endblock custom_css %}
+{% block content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <form id="create-form" method="POST" class="signup" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-header">
+                    <h1>{{ task.title }}</h1>
+                    <h2 class="mb-2"><a href="{% url 'task_list' %}"><span>View all Tasks</span></a></h2>
+                    <div class="row">
+                        <div class="col-6 d-flex justify-content-end">
+                            <div class="detail-completed-div checkbox-wrapper d-flex justify-content-end">
+                                <input type="checkbox" id="task_{{task.id}}" data-task-id="{{task.id}}" data-completed="{{task.completed}}" {% if task.is_complete %}checked="checked"{% endif %}>
+                                <label class="completed-label" for="task_{{task.id}}"><i class="fa-solid fa-check"></i></label>
+                            </div>
+                        </div>
+
+                        <div class="col-6 d-flex justify-content-start">
+                            <div class="edit-icon-div checkbox-wrapper d-flex">
+                                <a href="{% url 'task_update' task.id %}"><button class="edit-btn" type="button"><i class="fa-solid fa-pen-to-square fa-2xl"></i></button></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <div class="row">
+                        <div class="task-description p-4">
+                            <div class="decription-heading">
+                                <p><span class="other-detais-heading">Task Detail:</span></p>
+                            </div>
+                            <p><span>{{ task.description }}</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="other-details decription-heading p-3">
+                                <p class"mb-2"><span class="other-detais-heading">Due Date:</span></p>
+                                <p><span>{{ task.due_date }}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="other-details decription-heading p-3">
+                                <p class"mb-2"><span class="other-detais-heading">Task Priority:</span></p>
+                                <p><span>{{ task.priority }}</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+                <div class="p-4">
+                    <div class="row">
+                        <div class="task-description p-4">
+                            <div class="task-image-div d-flex mb-2">
+                                <div class="row">
+                                    {% for photo in task.photos.all %}
+                                        {% comment %} <div class="col-4 col-md-3 col-lg-2 mb-2"> {% endcomment %}
+                                            <div class="task-image">
+                                                {% comment %} <img class="task-images mx-2" src="{{ photo.image.url }}" alt="{{ photo.image.name }}"> {% endcomment %}
+                                                <a href="#" class="image-link" data-toggle="modal" data-target="#photoModal{{ photo.id }}">
+                                                    <img class="task-images" src="{{ photo.image.url }}" alt="{{ photo.image.name }}">
+                                                </a>
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="photoModal{{ photo.id }}" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel{{ photo.id }}" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="photoModalLabel{{ photo.id }}">{{ task.title }}</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body d-flex justify-content-center">
+                                                                <img src="{{ photo.image.url }}" alt="{{ photo.image.name }}" class="img-fluid">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% comment %} </div> {% endcomment %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'img/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div px-3">
+                <p class="mb-2 text-center"><span class="response-message text-center"></span></p>
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}
+
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function(){
+        // Add event listener for checkbox change
+        $('.checkbox-wrapper input[type="checkbox"]').on('change', function() {
+            const taskId = $(this).data('task-id');
+            const completed = this.checked;
+            updateTaskStatus(taskId, completed)
+
+        });
+
+        // Function to send data to the server
+        function updateTaskStatus(taskId, completed) {
+            const url = '/update_task_status/' + taskId + '/';
+            const data = { 'task_id': taskId, 'completed': completed };
+
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Handle success, e.g., redirect to a new page
+                    //window.location.href = '/success/';
+                    console.log('data rec')
+                    console.log('data.success: ', data.success)
+                    $('#popup-container').addClass('show');
+                    $('.response-message').text(data.success);
+
+                    setTimeout(function(){
+                        $('#popup-container').removeClass('show');
+                        $('.response-message').text('');
+                    }, 1000)
+                } 
+                else {
+                    $('#error-message').text(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Network error:', error);
+            });
+        }
+
+        $('.image-link').click(function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $(target).modal('show');
+        });
+
+        $('.modal .close').click(function() {
+            // Find the parent modal and close it
+            $(this).closest('.modal').modal('hide');
+        });
+    });
+</script>
+{% endblock custom_js %}

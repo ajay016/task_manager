@@ -1,0 +1,49 @@
+{% extends "tasks/base.html" %}
+{% load static %}
+
+{% block content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <form id="signup-form" action="{% url 'login' %}" method="POST" class="signup" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-header">
+                    <h1>Login</h1>
+                    <h2 class="px-3">Don't have an account? <a class="px-2" href="{% url 'signup' %}"><span class="signup-login-link">Sign up</span></a></h2>
+                </div>
+              
+                <div class="inner-form">
+                    <div class="signup__field">
+                        <input class="signup__input" type="email" name="email" id="email" required />
+                        <label class="signup__label" for="email">Email</label>
+                    </div>
+                  
+                    <div class="signup__field">
+                        <input class="signup__input" type="password" name="password" id="password" required />
+                        <label class="signup__label" for="password">Password</label>
+                    </div>
+                </div>
+
+                {% if error_message %}
+                    <div id="error-message-div" class="error-message-div">
+                        <div id="error-message" class="error-message py-3 px-4">{{ error_message }}</div>
+                    </div>
+                {% endif %}
+              
+                <div class="btn-div d-flex mb-3">
+                    <button class="submit-btn" type="submit">Login</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'img/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div">
+                <p class="mb-2"><span class="text-center">Registration Successful</span></p>
+                <p class="text-center"><span>Please Login</span></p>
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}

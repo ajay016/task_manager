@@ -1,0 +1,258 @@
+{% extends "tasks/base.html" %}
+{% load static %}
+{% block custom_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+{% endblock custom_css %}
+{% block content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <form id="update-form" method="POST" class="signup" autocomplete="off">
+                {% csrf_token %}
+                <div class="form-header">
+                    <h1>{{ task.title }}</h1>
+                    <h2 class="mb-2"><a href="{% url 'task_list' %}"><span>View All Tasks</span></a></h2>
+                    <h2><a href="{% url 'create_task' %}"><span>Create a task</span></a></h2>
+                </div>
+              
+                <div class="inner-form">
+                    <div class="signup__field">
+                        <input class="signup__input" type="text" name="task_name" id="task_name" value="{{ task.title }}">
+                        <label class="signup__label" for="task_name">Task Name</label>
+                    </div>
+    
+                    <div class="signup__field">
+                        <input type="text" id="due_date" class="signup__input datepicker mr-2" name="due_date" value="{{ task.due_date }}">
+                        <label class="signup__label" for="due_date">Due Date</label>
+                    </div>
+                  
+                    <div class="signup__field">
+                        <!--customselect-->
+                        <div class="select_mate" data-mate-select="dropdown-active" >
+                            <select name="priority" onchange="" onclick="return false;" id="priority">
+                                <option value="{{ task.priority }}">{{ task.priority }}</option>
+                                {% for priority in priorities %}
+                                    {% if priority.0 != task.priority %}
+                                        <option value="{{ priority.0 }}">{{ priority.1 }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                            <p class="selecionado_opcion"  onclick="open_select(this)" ></p><span onclick="open_select(this)" class="icon_select_mate" ><svg fill="#000000" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.41 7.84L12 12.42l4.59-4.58L18 9.25l-6 6-6-6z"/>
+                                <path d="M0-.75h24v24H0z" fill="none"/>
+                            </svg></span>
+                            <div class="cont_list_select_mate">
+                            <ul class="cont_select_int">  </ul> 
+                            </div>
+                        </div>
+                        <!--customselect-->
+                    </div>
+                  
+                    <div class="signup__field">
+                        <textarea class="signup__input" id="description" rows="3" name="description">{{ task.description }}</textarea>
+                        <label class="signup__label" for="description">Task Details</label>
+                    </div>
+
+                    <div class="photos-div">
+                        <p class="text-center add-pics py-3"><span>Add Pictures</span></p>
+                        <input class="" type="file" name="photos" id="photos" multiple="multiple">
+                    </div>
+
+                    <div class="thumbnails mb-3"></div>
+
+                    <div class="p-4">
+                        <div class="row">
+                            <div class="task-description p-4">
+                                <div class="task-image-div d-flex mb-2">
+                                    <div class="row justify-content-between gx-1">
+                                        {% for photo in task.photos.all %}
+                                            {% comment %} <div class="col-4 col-md-3 col-lg-2 mb-2"> {% endcomment %}
+                                                <div class="task-image">
+                                                    {% comment %} <img class="task-images mx-2" src="{{ photo.image.url }}" alt="{{ photo.image.name }}"> {% endcomment %}
+                                                    <a href="#" class="image-link" data-toggle="modal" data-target="#photoModal{{ photo.id }}">
+                                                        <img class="task-images" src="{{ photo.image.url }}" alt="{{ photo.image.name }}">
+                                                    </a>
+                                                    <input class="photos-checkbox" type="checkbox" name="delete_photos" value="{{ photo.id }}" data-photo-id="{{ photo.id }}" checked>
+                                                    <!-- Modal -->
+                                                    <div class="modal fade" id="photoModal{{ photo.id }}" tabindex="-1" role="dialog" aria-labelledby="photoModalLabel{{ photo.id }}" aria-hidden="true">
+                                                        <div class="modal-dialog modal-lg" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="photoModalLabel{{ photo.id }}">{{ task.title }}</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body d-flex justify-content-center">
+                                                                    <img src="{{ photo.image.url }}" alt="{{ photo.image.name }}" class="img-fluid">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% comment %} </div> {% endcomment %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div id="error-message-div" class="error-message-div" style="display: none;">
+                    <div id="error-message" class="error-message py-3 px-4"></div>
+                </div>
+                <div class="btn-div d-flex mb-3">
+                    <button class="submit-btn" type="submit" data-task-id="{{ task.id }}">Update Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'img/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div">
+                <p class="mb-2"><span class="text-center">Task Updated Successfully</span></p>
+                <!--<p class="text-center"><span>Please Login</span></p>-->
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{% static "js/select_dropdown.js" %}"></script>
+<script>
+    $(document).ready(function(){
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            toggleActive: true
+        });
+
+        const fileInput = $('#photos');
+        const thumbnailsContainer = $('.thumbnails');
+
+        fileInput.on('change', function(event) {
+            const files = event.target.files;
+
+            $.each(files, function(index, file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                    const thumbnail = $('<img>');
+                    thumbnail.addClass('thumbnail');
+                    thumbnail.attr('src', e.target.result);
+                    thumbnailsContainer.append(thumbnail);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        $('#update-form').on('submit', function(event) {
+            event.preventDefault();
+            console.log('clicked')
+    
+            let task_name = $('#task_name').val();
+            let due_date = $('#due_date').val();
+            let priority = $('#priority').val();
+            let description = $('#description').val();
+            let taskId = $('#update-form button[type="submit"]').data('task-id');
+
+            var checkboxes = $('.photos-checkbox');
+
+            /*checkboxes.each(function() {
+                var checkbox = $(this);
+
+                if (!checkbox.is(":checked")) {
+                    var photoId = checkbox.data('photo-id');
+                    var photoIdInt = parseInt(photoId)
+                    photoIdList.push(photoIdInt);
+                    console.log("Unchecked checkbox with data-photo-id: " + photoIdInt);
+                }
+            });*/
+            let deletePhotoId = [];
+            $('.photos-checkbox:not(:checked)').each(function() {
+                var photoId = $(this).data('photo-id')
+                deletePhotoId.push(photoId)
+            });
+
+            console.log('conv arra: ', typeof(deletePhotoId))
+
+            const fileInputs = $('input[type="file"]');
+            let photos = []
+            fileInputs.each(function() {
+                const files = this.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    console.log('Selected file:', file);
+                    photos.push(file)
+                    console.log('photos: ', photos)
+                }
+            });
+    
+            let formData = new FormData(this);
+            formData.append('photos_list', photos)
+            formData.append('photo_id_list', deletePhotoId)
+
+            for (const entry of formData.entries()) {
+                console.log('Form Data: ')
+                console.log(entry[0], entry[1]);
+            }
+    
+            fetch('/task_update_save/' + taskId + '/', {
+                method: 'POST',
+                headers: {
+                    'x-CSRFToken': '{{csrftoken}}'
+                },
+                body: formData,
+                //credentials: 'same-origin',  // Include this if your Django project uses CSRF protection
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Handle success, e.g., redirect to a new page
+                    //window.location.href = '/success/';
+                    console.log('data.success: ', data.success)
+                    $('#popup-container').addClass('show');
+                    $('.thumbnails').empty()
+                    //$('#update-form')[0].reset();
+
+                    setTimeout(function(){
+                        $('#popup-container').removeClass('show');
+                        window.location.reload();
+                    }, 1000)
+                } 
+                else if(data.error_title) {
+                    $('#error-message').text(data.error_title);
+                    $('#error-message-div').show();
+                }
+            })
+            .catch(error => {
+                $('#error-message').text('Error: ' + error.message);
+            });
+        });
+
+        $('.close-icon').on('click', function(){
+            $('#popup-container').removeClass('show');
+        })
+
+        $('.image-link').click(function(e) {
+            e.preventDefault();
+            var target = $(this).data('target');
+            $(target).modal('show');
+        });
+
+        $('.modal .close').click(function() {
+            // Find the parent modal and close it
+            $(this).closest('.modal').modal('hide');
+        });
+    });
+</script>
+{% endblock custom_js %}
+

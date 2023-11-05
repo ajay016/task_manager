@@ -1,0 +1,135 @@
+{% extends "tasks/base.html" %}
+{% load static %}
+{% load rest_framework %}
+{% block custom_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.css">
+{% endblock custom_css %}
+{% block content %}
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <form id="create-form" method="POST" class="signup" autocomplete="off">
+                {% csrf_token %}
+                {% render_form serializer %}
+                <input type="file" name="photos" multiple>
+            </form>
+        </div>
+    </div>
+
+    <div id="popup-container" class="popup-container">
+        <div class="popup d-flex justify-content-center">
+            <img src="{% static 'img/404-tick.png' %}" alt="" class="success-tick">
+            <div class="registration-success-div">
+                <p class="mb-2"><span class="text-center">Task Created Successfully</span></p>
+                <!--<p class="text-center"><span>Please Login</span></p>-->
+            </div>
+            <span class="close-icon"><i class="fa-solid fa-xmark fa-xl" style="color: #dedede;"></i></span>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block custom_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="{% static "js/select_dropdown.js" %}"></script>
+<script>
+    $(document).ready(function(){
+        $('.datepicker').datepicker({
+            format: 'yyyy-mm-dd',
+            todayHighlight: true,
+            toggleActive: true
+        });
+
+        const fileInput = $('#photos');
+        const thumbnailsContainer = $('.thumbnails');
+
+        fileInput.on('change', function(event) {
+            const files = event.target.files;
+
+            $.each(files, function(index, file) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function(e) {
+                    const thumbnail = $('<img>');
+                    thumbnail.addClass('thumbnail');
+                    thumbnail.attr('src', e.target.result);
+                    thumbnailsContainer.append(thumbnail);
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        $('#create-form').on('submit', function(event) {
+            event.preventDefault();
+            console.log('clicked')
+    
+            let task_name = $('#task_name').val();
+            let due_date = $('#due_date').val();
+            let priority = $('#priority').val();
+            let description = $('#description').val();
+
+            const fileInputs = $('input[type="file"]');
+            let photos = []
+            fileInputs.each(function() {
+                const files = this.files;
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    console.log('Selected file:', file);
+                    photos.push(file)
+                    console.log('photos: ', photos)
+                    // You can now do something with each selected file, like displaying a preview.
+                }
+            });
+    
+            let formData = new FormData(this);
+            formData.append('photos: ', photos)
+
+            for (const entry of formData.entries()) {
+                console.log('Form Data: ')
+                console.log(entry[0], entry[1]);
+            }
+    
+            fetch('/save_task/', {
+                method: 'POST',
+                headers: {
+                    'x-CSRFToken': '{{csrftoken}}'
+                },
+                body: formData,
+                //credentials: 'same-origin',  // Include this if your Django project uses CSRF protection
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Handle success, e.g., redirect to a new page
+                    //window.location.href = '/success/';
+                    console.log('data.success: ', data.success)
+                    $('#popup-container').addClass('show');
+                    $('.thumbnails').empty()
+                    $('#create-form')[0].reset();
+
+                    setTimeout(function(){
+                        $('#popup-container').removeClass('show');
+                    }, 1000)
+                }
+                else if(data.error_title) {
+                    $('#error-message').text(data.error_title);
+                    $('#error-message-div').show();
+                }
+                
+                else {
+                    $('#error-message').text(data.message);
+                }
+            })
+            .catch(error => {
+                $('#error-message').text('Error: ' + error.message);
+            });
+        });
+
+        $('.close-icon').on('click', function(){
+            $('#popup-container').removeClass('show');
+        })
+    });
+</script>
+{% endblock custom_js %}
