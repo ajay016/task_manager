@@ -152,7 +152,7 @@ class SaveTask(View):
                 new_photo.save()
                 saved_photos.append(new_photo)
 
-            task = Task(user=user, title=title, description=description, due_date=due_date, priority=priority)
+            task = Task(user=user, title=title, description=description, due_date=formatted_date, priority=priority)
 
             task.save()
             task.photos.set(saved_photos)
