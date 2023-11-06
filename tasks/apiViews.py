@@ -25,6 +25,8 @@ class TaskListApiView(APIView):
         print('api key: ', api_key)
         api_header = request.headers
         api_get_header = request.headers.get('Api-Key')
+        print('api_header: ', api_header)
+        print('api_get_header: ', api_get_header)
 
         if api_key == api_get_header:
             print('api_header: ', api_header)
@@ -47,6 +49,7 @@ class TaskDetailApiView(APIView):
         print('api key: ', api_key)
         api_header = request.headers
         api_get_header = request.headers.get('Api-Key')
+        print('api_get_header', api_get_header)
 
         if api_key == api_get_header:
             tasks = Task.objects.get(id=task_id)
